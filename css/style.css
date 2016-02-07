@@ -198,44 +198,54 @@
 /* Image */
 
 	.image {
-		border: 0;
-		position: relative;
-		
+	    border: 0;
+	    position: relative;
+	    
 	}
 
-		.image.fit {
-			display: block;
-		}
+	.image.fit {
+	    display: block;
+	}
+	
+	.image.fit img {
+	    display: block;
+	    width: 100%;
+	}
+	
+	.image.feature {
+	    display: block;
+	    margin: 0 0 2em 0;
+	}
+	
+	.image.feature img {
+	    display: block;
+	    width: 100%;
+	}
+	
+	.image.featured {
+	    position: static;
+	    display: block;
+	    margin: 0;
+	}
+	
+	.image.featured img {
+	    display: block;
+	    width: 100%;
+	    border: 5px solid white
+	}
+	.image.centred {
+	    display: block;
+	    width: 100%;
+	}
+	.image.centred img {
+	    display: block;
+	    border: 5px solid whith
+	    width: 200%;
+	    margin: auto;
 
-			.image.fit img {
-				display: block;
-				width: 100%;
-			}
-
-		.image.feature {
-			display: block;
-			margin: 0 0 2em 0;
-		}
-
-			.image.feature img {
-				display: block;
-				width: 100%;
-			}
-
-		.image.featured {
-			position: static;
-			display: block;
-			margin: 0;
-		}
-
-			.image.featured img {
-				display: block;
-				width: 100%;
-				border: 5px solid white
-			}
-
-/* Icon */
-
+	}
+	/* Icon */
+	
 	.icon {
 		position: relative;
 	}
@@ -488,7 +498,7 @@ o					border-radius: 100%;
 /* Wrapper */
 
 	.wrapper.style1 {
-		padding-top: 5em;
+		padding-top: 7em;
 		padding-bottom: 2em;
 		background: url(../images/coding.jpg) no-repeat center top;
 		background-size: cover;
