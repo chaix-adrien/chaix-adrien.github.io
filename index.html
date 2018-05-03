@@ -1,199 +1,330 @@
-<!DOCTYPE HTML>
-<!--
-	Phase Shift by TEMPLATED
-	templated.co @templatedco
-	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
 <html>
-	<head>
-	  <title>Adrien Chaix</title>
-	  <link rel="shortcut icon" href="images/icon.png">
-	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	  <meta name="description" content="" />
-	  <meta name="keywords" content="" />
-	  <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
-	  <script src="js/jquery.min.js"></script>
-	  <script src="js/jquery.dropotron.min.js"></script>
-	  <script src="js/skel.min.js"></script>
-	  <script src="js/skel-layers.min.js"></script>
-	  <script src="js/init.js"></script>
-	  <noscript>
-	    <link rel="stylesheet" href="css/skel.css" />
-	    <link rel="stylesheet" href="css/style.css" />
-	    <link rel="stylesheet" href="css/style-wide.css" />
-	  </noscript>
-	  <!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
-	</head>
-	<body>
-	  
-	  <!-- Wrapper -->
-	  <div class="wrapper style1">
-	    
-	    <!-- Header -->
-	    <div id="header" class="skel-panels-fixed">
-	      <div id="logo">
-		<h1><a href="index.html"><h4>Adrien Chaix</h4></a></h1>
-		<span class="tag"> Epitech student - Toulouse</span>
-	      </div>
-	      <nav id="nav">
-	      	<ul>
-	      	  <li><a href="adrien_chaix_CV.pdf" target="_blank">My CV</a></li>
-	      	</ul>
-	      </nav>
-	    </div>
-	    
-	    <!-- Banner -->
-	    <div id="banner" class="container">
-	      <section>
-		<p><strong><h4>Adrien Chaix</h4></strong></p>
-		<a href="my_cursus.html" class="button medium">MY CURSUS</a>
-	      </section>
-	    </div>
-	    
-	    <!-- Extra -->
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+    </head>
+    <body>
+        <div id="yt-main">
+            <div id="yt-search">
+                <input id="searchQuit" type="image" src="./pictures/back.svg" onclick="quitSearchMode()">
+                <input id="searchBar" type="text" class="textbox" placeholder="Search" onfocus="enterSearchMode()">
+                <input id="searchButton" title="Search" src="./pictures/search.svg" type="image" class="button" onclick="search()">
+            </div>            
+            <div id="yt-searchBody"></div>
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div id="modalContent">
+                        <div id="iframe"></div>
+                        <button id="addButton" onclick="addSong()">ADD</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        /* YOUTUBE API=====================================*/
+        var tag = document.createElement('script');
+        tag.src = "//www.youtube.com/player_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        var player;
+        function onYouTubePlayerAPIReady() {
+            player = new YT.Player('iframe', {
+                width: "100%",
+                height: "",
+                playerVars: {
+                    rel: 0,
+                    fs: 0
+                }
+            });
+        }
+        /* INIT ==========================================*/
+        $ = (name) => document.getElementById(name);
+        var base_URL = "https://www.googleapis.com/youtube/v3"
+        var apiKey = "AIzaSyCeERu6rzoBDSkPyIcJih-HZ8vyFuaMZWE"
+        var yt_searchBody = $("yt-searchBody");
+        var searchBar = $("searchBar");
+        var modal = $('myModal');
+        var searchQuitButton = $("searchQuit");
+        var modalContent = $("modalContent");
+        var iframe = $("iframe");
+        searchBar.addEventListener("keyup", function(event) {
+            console.log(event.keyCode)
+            if (event.keyCode === 13) {
+                $("searchButton").click();
+            }
+        }); 
 
-	    </style>
-	    
-	    <div id="extra">
-	      <div class="container">
-		<div class="row no-collapse-1">
-		  <section class="4u"> <a href="#" class="image featured"><img src="images/pong.png"
-									       onmouseover="this.src='images/pong.gif';"
-									       onmouseout="this.src='images/pong.png';"></a>
-		    <div class="box">
-		      <p><h3>An advanced multiplayer Pong</h3></p>
-		      <href="#" class="button">PongRELOADED</div>
-		  </section>
-		  <section class="4u"> <a href="#" class="image featured"><img src="images/wolf.png"
-									       onmouseover="this.src='images/wolf.gif';"
-									       onmouseout="this.src='images/wolf.png';"></a>
-		    <div class="box">
-		      <p><h3>A 3D survival game</h3></p>
-		      <href="#" class="button">Wolf3D</div>
-		  </section>
-		  <section class="4u"> <a href="#" class="image featured"><img src="images/doom.png"
-									       onmouseover="this.src='images/doom.gif';"
-									       onmouseout="this.src='images/doom.png';"></a>
-		    <div class="box">
-		      <p><h3>A DOOM-like in the Portal world</h3></p>
-		      <a href="#" class="button">PortalDOOM</a> </div>
-		  </section>
-		</div>
-		
-		<!-- 	<div class="row no-collapse-1"> -->
-		<!-- 			<section class="4u"> <a href="#" class="image featured"><img src="images/pic01.jpg" alt=""></a> -->
-		<!-- 				<div class="box"> -->
-		<!-- 					<p>Donec leo, vivamus fermentum nibh in augue praesent a lacus at urna congue rutrum  wisi maecenas ligula.</p> -->
-		<!-- 					<a href="#" class="button">Read More</a> </div> -->
-		<!-- 			</section> -->
-		<!-- 			<section class="4u"> <a href="#" class="image featured"><img src="images/pic02.jpg" alt=""></a> -->
-		<!-- 				<div class="box"> -->
-		<!-- 					<p>Donec leo, vivamus fermentum nibh in augue praesent a lacus at urna congue rutrum  wisi maecenas ligula.</p> -->
-		<!-- 					<a href="#" class="button">Read More</a> </div> -->
-		<!-- 			</section> -->
-		<!-- 			<section class="4u"> <a href="#" class="image featured"><img src="images/pic03.jpg" alt=""></a> -->
-		<!-- 				<div class="box"> -->
-		<!-- 					<p>Donec leo, vivamus fermentum nibh in augue praesent a lacus at urna congue rutrum  wisi maecenas ligula.</p> -->
-		<!-- 					<a href="#" class="button">Read More</a> </div> -->
-		<!-- 			</section> -->
-		<!-- 		</div> -->
-		<!-- 	</div> -->
-		<!-- </div> -->
-		
-		<!-- Main -->
-		<div id="main">
-		  <div class="container">
-		    <div class="row"> 
-		      
-		      Content
-		      <div class="6u">
-		      	<section>
-		      	  <ul class="style">
-		      	    <!-- <li class="fa fa-wrench"> -->
-		      	    <!--   <h3>Hello you</h3> -->
-		      	    <!--   <span>Wanna play /w me ?<br><br><br></span> </li> -->
-			    <li class="fa fa-cogs">
-			      <h3>Technical achievements</h3>
-			      <span>-ls command<br>
-				-printf function<br>
-				-elementary shell</span> </li>
-		      	    <!-- <li class="fa fa-smile-o"> -->
-		      	    <!--   <h3>About me</h3> -->
-		      	    <!--   <span>I am a student at Epitech - Toulouse<br></span> </li> -->
-		      	  </ul>
-		      	</section>
-		      </div>
-		      <div class="6u">
-			<section>
-			  <ul class="style">
-			    <!-- <li class="fa fa-cogs"> -->
-			    <!--   <h3>Technical achievements</h3> -->
-			    <!--   <span>-ls command<br> -->
-			    <!-- 	-printf function<br> -->
-			    <!-- 	-elementary shell</span> </li> -->
-			    <li class="fa fa-road">
-			      <h3>About my cursus</h3>
-			      <span>BAC +1 in infomatique science
-				<p>Learning C / Python</span>
-			    </li>
-			  </ul>
-			</section>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-		
-	      </div>
-	      
-	      <!-- Footer -->
-	      <div id="footer" class="wrapper style2">
-		<div class="container">
-		  <section>
-		    <header class="major">
-		      <h2>CONTACT</h2>
-		      <span class="byline"></span>
-		    </header>
-		    <form method="post" action="//formspree.io/chaix.adrien@laposte.net" method="POST">
-		      <div class="row half">
-			<div class="12u">
-			  <input type="text" name="name" id="name" placeholder="Name" />
-			</div>
-		      </div>
-		      <div class="row half">
-			<div class="12u">
-			  <input type="text" name="email" id="email" placeholder="Email" />
-			</div>
-		      </div>
-		      <div class="row half">
-			<div class="12u">
-			  <textarea name="message" id="message" placeholder="Message"></textarea>
-			</div>
-		      </div>
-		      <div class="row half">
-			<div class="12u">
-			  <ul class="actions">
-			    <li><input type="submit" value="Send Message" class="alt" /></li>
-			  </ul>
-			</div>
-		      </div>
-		    </form>
-		  </section>
-		</div>
-	      </div>
-	      
-	      <!-- Copyright -->
-	      <div id="copyright">
-		<div class="container">
-		  <div class="copyright">
-		    <!-- <a href="http://www.freecounterstat.com" target="_Blank" title="hit counter">hit counter</a><br/> -->
-		    <script type="text/javascript" src="http://counter8.fcs.ovh/private/counter.js?c=c04f16ea529fe94008d0afa5351e4739"></script>
-		    <!-- <ul class="icons"> -->
-		    <!--   <li><a href="#" class="fa fa-facebook"><span>Facebook</span></a></li> -->
-		    <!--   <li><a href="#" class="fa fa-twitter"><span>Twitter</span></a></li> -->
-		    <!--   <li><a href="#" class="fa fa-google-plus"><span>Google+</span></a></li> -->
-		    <!-- </ul> -->
-		  </div>
-		</div>
-	      </div>
-	</body>
+        /* CORE ==========================================*/
+        function getHttp(theUrl, toDo) {
+            var http = new XMLHttpRequest();
+            http.open("GET", theUrl, true);
+            http.onreadystatechange = () => toDo(http);
+            http.send();
+        }
+
+        function search() {
+            function cleanSearch() {
+                while (yt_searchBody.firstChild) {
+                    yt_searchBody.removeChild(yt_searchBody.firstChild);
+                }
+            }
+            cleanSearch()
+            enterSearchMode();
+            var maxResult = 15;
+            var searchTopic = searchBar.value;
+            getHttp(`${base_URL}/search?part=snippet&q=${searchTopic}&maxResults=${maxResult}&type=video&key=${apiKey}`,
+            (http) => {
+                var data = JSON.parse(http.responseText);
+                console.log(data);
+                data.items.forEach(vid => {
+                    var div = document.createElement("div");
+                    var img = document.createElement("img");
+                    var txt = document.createElement("p");
+                    var txtChannel = document.createElement("p");
+                    img.setAttribute("src", vid.snippet.thumbnails.medium.url);
+                    img.addEventListener('load', (() => {
+                        txt.innerHTML = vid.snippet.title;
+                        txtChannel.innerHTML = vid.snippet.channelTitle;
+                    }))
+                    img.setAttribute("videoId", vid.id.videoId);
+                    img.onclick = (vid) => displayVideo(vid.originalTarget.getAttribute("videoId"));
+                    
+                    txtChannel.setAttribute("class", "channelText");
+                    
+                    div.setAttribute("class", "searchResult");
+                    div.appendChild(img);
+                    div.appendChild(txt);
+                    div.appendChild(txtChannel);
+                    yt_searchBody.appendChild(div);
+                });
+            })
+        }
+
+        function displayVideo(id) {
+            player.loadVideoById(id);
+            modal.style.display = "block";
+        }
+
+        function addSong() {
+            console.log("add song " + player.getVideoData()['video_id']);
+            quitSearchMode();
+        }
+
+        function enterSearchMode() {
+            yt_searchBody.style["display"] = "block";
+            searchQuitButton.style["display"] = "block";
+            
+        }
+        function quitSearchMode() {
+            yt_searchBody.style["display"] = "none";
+            searchQuitButton.style["display"] = "none";
+            quitModal();
+        }
+        var span = document.getElementsByClassName("close")[0];
+        function quitModal() {
+            player.pauseVideo();
+            modal.style.display = "none";
+        }
+        
+        span.onclick = function() {
+            quitModal();
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                quitModal();
+            }
+        }
+
+        search();
+        quitSearchMode();
+    </script>
+
+    <style>
+        #yt-main {
+        }
+        #yt-searchBar {
+            height: 5%;
+        }
+
+        #yt-search {
+            display: flex;
+        }
+
+        #yt-searchBody {
+            background-color: #eeeeee;
+            height: 95%;
+            overflow: scroll;
+            -webkit-overflow-scrolling: touch;
+            justify-content:space-around;
+            -webkit-animation: expand 1s;
+            animation: expand 0.2s;
+        }
+        @-webkit-keyframes expand {
+            from { height: 0%; }
+            to { height: 95%; }
+        }  
+        @keyframes expand {
+            from { height: 0%; }
+            to { height: 95%; }
+        }
+        #addButton {
+            width: 50%;
+            height: 5%;
+            display: block;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            align-self: center;
+            color: white;
+            background-color: #2c2c2c;
+        }
+
+        .searchResult img {
+            padding: 10px;
+            max-width: 90%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            filter: drop-shadow(0px 0px 5px black);
+            -webkit-filter: drop-shadow(0px 0px 5px black);
+            transition: all 0.2s ease;
+        }
+        .searchResult img:hover {
+            max-width: 93%;
+            filter: drop-shadow(0px 0px 10px black);
+            -webkit-filter: drop-shadow(0px 0px 7px black);
+        }
+
+        .searchResult p {
+            font-size: 20px;
+            margin: 0px;
+            padding-left: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .searchResult .channelText {
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: normal;
+            color : #797979;
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            -webkit-animation: fadeIn 1s;
+            animation: fadeIn 0.2s;
+        }
+        @-webkit-keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }  
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background-color: black;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            padding-top: 5px;
+            border: 1p;
+            
+            border-radius: 20px;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #searchBar {
+        outline: 0;
+        height: 42px;
+        width: 90%;
+        line-height: 42px;
+        padding: 0 16px;
+        background-color: rgba(182, 182, 182, 0.8);
+        color: #212121;
+        border: 0;
+        float: left;
+        -webkit-border-radius: 4px 0 0 4px;
+        border-radius: 4px 0 0 4px;
+        }
+
+        #searchBar:focus {
+        outline: 0;
+        -webkit-border-radius: 0 0 0 ;
+        border-radius: 0 0 0 0;
+        background-color: #FFF;
+        }
+
+        #searchButton, #searchQuit {
+        outline: 0;
+        background: none;
+        background-color: rgba(38, 50, 56, 0.8);
+        float: left;
+        height: 42px;
+        width: 42px;
+        text-align: center;
+        line-height: 42px;
+        border: 0;
+        color: #FFF;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: 16px;
+        text-rendering: auto;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        -webkit-transition: background-color .4s ease;
+        transition: background-color .4s ease;
+        -webkit-border-radius: 0 4px 4px 0;
+        border-radius: 0 4px 4px 0;
+        }
+
+        #searchQuit {
+            -webkit-border-radius: 4px 0 0 4px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        #searchButton:hover {
+            background-color: rgba(0, 150, 136, 0.8);
+        }
+
+        #searchQuit {
+            -webkit-animation: expandQuit 1s;
+            animation: expandQuit 0.2s;
+        }
+        @-webkit-keyframes expandQuit {
+            from { width: 0; }
+            to { width: 42px; }
+        }  
+        @keyframes expandQuit {
+            from { width: 0px; }
+            to { width: 42px; }
+        }
+
+        #searchQuit:hover  {
+            background-color: rgba(224, 0, 0, 0.8);
+        }
+    </style>
 </html>
