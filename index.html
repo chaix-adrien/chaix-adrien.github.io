@@ -1,6 +1,7 @@
 <html>
     <head>
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     </head>
     <body>
         <div id="yt-main">
@@ -22,6 +23,8 @@
         </div>
     </body>
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="./js/Jquery/jquery.min.js"></script>
+    <script src="./js/touchable.js"></script>
     <script>
         /* YOUTUBE API=====================================*/
         var tag = document.createElement('script');
@@ -40,17 +43,16 @@
             });
         }
         /* INIT ==========================================*/
-        $ = (name) => document.getElementById(name);
+        _ = (name) => document.getElementById(name);
         var base_URL = "https://www.googleapis.com/youtube/v3"
         var apiKey = "AIzaSyCeERu6rzoBDSkPyIcJih-HZ8vyFuaMZWE"
-        var yt_searchBody = $("yt-searchBody");
-        var searchBar = $("searchBar");
-        var modal = $('myModal');
-        var searchQuitButton = $("searchQuit");
-        var modalContent = $("modalContent");
-        var iframe = $("iframe");
+        var yt_searchBody = _("yt-searchBody");
+        var searchBar = _("searchBar");
+        var modal = _('myModal');
+        var searchQuitButton = _("searchQuit");
+        var modalContent = _("modalContent");
+        var iframe = _("iframe");
         searchBar.addEventListener("keyup", function(event) {
-            console.log(event.keyCode)
             if (event.keyCode === 13) {
                 $("searchButton").click();
             }
@@ -70,8 +72,7 @@
                     yt_searchBody.removeChild(yt_searchBody.firstChild);
                 }
             }
-            cleanSearch()
-            enterSearchMode();
+            cleanSearch();
             var maxResult = 15;
             var searchTopic = searchBar.value;
             getHttp(`${base_URL}/search?part=snippet&q=${searchTopic}&maxResults=${maxResult}&type=video&key=${apiKey}`,
@@ -80,25 +81,24 @@
                 console.log(data);
                 data.items.forEach(vid => {
                     var div = document.createElement("div");
-                    var img = document.createElement("img");
+                    var img = $("<img>").Touchable();
                     var txt = document.createElement("p");
                     var txtChannel = document.createElement("p");
-                    img.setAttribute("src", vid.snippet.thumbnails.medium.url);
-                    img.addEventListener('load', (() => {
+                    img[0].setAttribute("src", vid.snippet.thumbnails.medium.url);
+                    img[0].addEventListener('load', (() => {
                         txt.innerHTML = vid.snippet.title;
                         txtChannel.innerHTML = vid.snippet.channelTitle;
                     }))
-                    img.setAttribute("videoId", vid.id.videoId);
-                    img.onclick = (vid) => displayVideo(vid.originalTarget.getAttribute("videoId"));
-                    
+                    img[0].setAttribute("videoId", vid.id.videoId);
+                    img.bind("tap", (e, touch) => displayVideo(e.currentTarget.getAttribute("videoId")));
                     txtChannel.setAttribute("class", "channelText");
-                    
                     div.setAttribute("class", "searchResult");
-                    div.appendChild(img);
+                    div.appendChild(img[0]);
                     div.appendChild(txt);
                     div.appendChild(txtChannel);
                     yt_searchBody.appendChild(div);
                 });
+                enterSearchMode();
             })
         }
 
@@ -113,19 +113,24 @@
         }
 
         function enterSearchMode() {
-            yt_searchBody.style["display"] = "block";
-            searchQuitButton.style["display"] = "block";
-            
+            if (yt_searchBody.firstChild) {
+                yt_searchBody.style["display"] = "block";
+                searchQuitButton.style["display"] = "block";
+                searchBar.style["border-radius"] = "0";
+            }
         }
         function quitSearchMode() {
             yt_searchBody.style["display"] = "none";
             searchQuitButton.style["display"] = "none";
+            searchBar.style["border-radius"] = "4px 0 0 4px";
             quitModal();
         }
         var span = document.getElementsByClassName("close")[0];
         function quitModal() {
-            player.pauseVideo();
-            modal.style.display = "none";
+            if (player) {
+                player.pauseVideo();
+                modal.style.display = "none";
+            }
         }
         
         span.onclick = function() {
@@ -136,8 +141,6 @@
                 quitModal();
             }
         }
-
-        search();
         quitSearchMode();
     </script>
 
@@ -277,7 +280,7 @@
         outline: 0;
         -webkit-border-radius: 0 0 0 ;
         border-radius: 0 0 0 0;
-        background-color: #FFF;
+        background-color: #eeeeee;
         }
 
         #searchButton, #searchQuit {
