@@ -23,8 +23,6 @@
         </div>
     </body>
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="./js/Jquery/jquery.min.js"></script>
-    <script src="./js/touchable.js"></script>
     <script>
         /* YOUTUBE API=====================================*/
         var tag = document.createElement('script');
@@ -43,15 +41,15 @@
             });
         }
         /* INIT ==========================================*/
-        _ = (name) => document.getElementById(name);
+        $ = (name) => document.getElementById(name);
         var base_URL = "https://www.googleapis.com/youtube/v3"
         var apiKey = "AIzaSyCeERu6rzoBDSkPyIcJih-HZ8vyFuaMZWE"
-        var yt_searchBody = _("yt-searchBody");
-        var searchBar = _("searchBar");
-        var modal = _('myModal');
-        var searchQuitButton = _("searchQuit");
-        var modalContent = _("modalContent");
-        var iframe = _("iframe");
+        var yt_searchBody = $("yt-searchBody");
+        var searchBar = $("searchBar");
+        var modal = $('myModal');
+        var searchQuitButton = $("searchQuit");
+        var modalContent = $("modalContent");
+        var iframe = $("iframe");
         searchBar.addEventListener("keyup", function(event) {
             if (event.keyCode === 13) {
                 $("searchButton").click();
@@ -66,6 +64,7 @@
             http.send();
         }
 
+        var lastTouched;
         function search() {
             function cleanSearch() {
                 while (yt_searchBody.firstChild) {
@@ -78,22 +77,32 @@
             getHttp(`${base_URL}/search?part=snippet&q=${searchTopic}&maxResults=${maxResult}&type=video&key=${apiKey}`,
             (http) => {
                 var data = JSON.parse(http.responseText);
-                console.log(data);
                 data.items.forEach(vid => {
                     var div = document.createElement("div");
-                    var img = $("<img>").Touchable();
+                    var img = document.createElement("img");
                     var txt = document.createElement("p");
                     var txtChannel = document.createElement("p");
-                    img[0].setAttribute("src", vid.snippet.thumbnails.medium.url);
-                    img[0].addEventListener('load', (() => {
+                    img.setAttribute("src", vid.snippet.thumbnails.medium.url);
+                    img.addEventListener('load', (() => {
                         txt.innerHTML = vid.snippet.title;
                         txtChannel.innerHTML = vid.snippet.channelTitle;
                     }))
-                    img[0].setAttribute("videoId", vid.id.videoId);
-                    img.bind("tap", (e, touch) => displayVideo(e.currentTarget.getAttribute("videoId")));
+                    img.addEventListener('touchstart', ((e) => {
+                        lastTouched = e.timeStamp;
+                    }))
+                    img.addEventListener('touchend', ((e) => {
+                        if (e.timeStamp - lastTouched < 150) {
+                            displayVideo(e.currentTarget.getAttribute("videoId"));
+                        }
+                    }))
+                    img.setAttribute("videoId", vid.id.videoId);
+                    img.onclick = (e) => {
+                        lastTouched = e.timeStamp;
+                        displayVideo(e.currentTarget.getAttribute("videoId"))
+                    };
                     txtChannel.setAttribute("class", "channelText");
                     div.setAttribute("class", "searchResult");
-                    div.appendChild(img[0]);
+                    div.appendChild(img);
                     div.appendChild(txt);
                     div.appendChild(txtChannel);
                     yt_searchBody.appendChild(div);
@@ -133,11 +142,12 @@
             }
         }
         
-        span.onclick = function() {
-            quitModal();
+        span.onclick = function(event) {
+            if (event.timeStamp - lastTouched > 500)
+                quitModal();
         }
         window.onclick = function(event) {
-            if (event.target == modal) {
+            if (event.target == modal && event.timeStamp - lastTouched > 500) {
                 quitModal();
             }
         }
