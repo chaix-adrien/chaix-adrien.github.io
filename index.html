@@ -65,6 +65,7 @@
         }
 
         var lastTouched;
+        var lastTouchedPos;
         function search() {
             function cleanSearch() {
                 while (yt_searchBody.firstChild) {
@@ -88,10 +89,16 @@
                         txtChannel.innerHTML = vid.snippet.channelTitle;
                     }))
                     img.addEventListener('touchstart', ((e) => {
+                        
+                        lastTouchedPos = {x : e.targetTouches[0].clientX, y : e.targetTouches[0].clientY};
+                        console.log(lastTouchedPos)
                         lastTouched = e.timeStamp;
                     }))
                     img.addEventListener('touchend', ((e) => {
-                        if (e.timeStamp - lastTouched < 150) {
+                        var pos = {x: e.changedTouches[0].clientX, y : e.changedTouches[0].clientY};
+                        if (e.timeStamp - lastTouched < 150 &&
+                        Math.abs(lastTouchedPos.x - pos.x) < 10 &&
+                        Math.abs(lastTouchedPos.y - pos.y) < 10) {
                             displayVideo(e.currentTarget.getAttribute("videoId"));
                         }
                     }))
