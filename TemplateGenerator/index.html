@@ -1,1 +1,724 @@
-<html> <header><title>This is title</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" /><meta charset="UTF-8" /> </header><body><div class="container"><div class="textContainer"><textarea id="template" class="text" rows="30" wrap="off" spellcheck="false" > Write some %%template%% here or click the select file button above (if supported on your browser)</textarea > </div> <input onchange="loadFile()" type="file" name="file" id="file" class="inputfile" /> <label class="btn btn-secondary" for="file">Select File</label> <button onClick="parseVariables()" type="button" class="btn btn-info"> Parse variables </button> <div class="variables"> <div class="variableContainer"> <div style="position:relative;"> <input onkeyup="changeVariableName(this, true)" class="variableName" type="text" value="template" /> <button style="opacity: 0; display: none;" type="button" onclick="deleteVariable(this)" class="btn btn-danger variableDelete" > X </button> </div> <textarea class="variableSubstitutes" rows="5" cols="10"> model text </textarea><div class="form-check staticContainer"> <input onchange="switchVariableType(this)" class="form-check-input" type="checkbox" /> <label class="form-check-label" for="defaultCheck1"> Static </label></div></div></div><div class="generateContainer"> <input placeholder="filename.html" type="text" id="outputFile" name="name" value="template.html" /> <Button onClick="generate()" class="btn btn-info" value="Generate" >Generate</Button ></div></div></body> <script src="https://code.jquery.com/jquery-1.10.2.js"></script> <script>!(function(t){let e="hwt",i=function(t,e){this.init(t,e);};(i.prototype={init:function(t,e){(this.$el=t),"function"===this.getType(e)&&(e={highlight:e}),"custom"===this.getType(e)?((this.highlight=e),this.generate()):console.error("valid config object not provided");},getType:function(t){let e=typeof t;if(!t)return"falsey";if(Array.isArray(t)) return 2===t.length&&"number"==typeof t[0]&&"number"==typeof t[1]?"range":"array";if("object"===e){if(t instanceof RegExp)return"regexp";if(t.hasOwnProperty("highlight"))return"custom";}else if("function"===e||"string"===e)return e;return"other";},generate:function(){switch((this.$el.addClass("hwt-input hwt-content").on("input.hwt",this.handleInput.bind(this)).on("scroll.hwt",this.handleScroll.bind(this)),(this.$highlights=t("<div>",{class:"hwt-highlights hwt-content"})),(this.$backdrop=t("<div>",{class:"hwt-backdrop"}).append(this.$highlights)),(this.$container=t("<div>",{class:"hwt-container"}).insertAfter(this.$el).append(this.$backdrop,this.$el).on("scroll",this.blockContainerScroll.bind(this))),(this.browser=this.detectBrowser()),this.browser)){case"firefox":this.fixFirefox();break;case"ios":this.fixIOS();} (this.isGenerated=!0),this.handleInput();},detectBrowser:function(){let t=window.navigator.userAgent.toLowerCase();return-1!==t.indexOf("firefox")?"firefox":t.match(/msie|trident/7|edge/)?"ie":t.match(/ipad|iphone|ipod/)&&-1===t.indexOf("windows phone")?"ios":"other";},fixFirefox:function(){let t=this.$highlights.css(["padding-top","padding-right","padding-bottom","padding-left"]),e=this.$highlights.css(["border-top-width","border-right-width","border-bottom-width","border-left-width"]);this.$highlights.css({padding:"0","border-width":"0"}),this.$backdrop.css({"margin-top":"+="+t["padding-top"],"margin-right":"+="+t["padding-right"],"margin-bottom":"+="+t["padding-bottom"],"margin-left":"+="+t["padding-left"]}).css({"margin-top":"+="+e["border-top-width"],"margin-right":"+="+e["border-right-width"],"margin-bottom":"+="+e["border-bottom-width"],"margin-left":"+="+e["border-left-width"]});},fixIOS:function(){this.$highlights.css({"padding-left":"+=3px","padding-right":"+=3px"});},handleInput:function(){let t=this.$el.val(),e=this.getRanges(t,this.highlight),i=this.removeStaggeredRanges(e),n=this.getBoundaries(i);this.renderMarks(n);},getRanges:function(t,e){switch(this.getType(e)){case"array":return this.getArrayRanges(t,e);case"function":return this.getFunctionRanges(t,e);case"regexp":return this.getRegExpRanges(t,e);case"string":return this.getStringRanges(t,e);case"range":return this.getRangeRanges(t,e);case"custom":return this.getCustomRanges(t,e);default:if(!e)return[];console.error("unrecognized highlight type");}},getArrayRanges:function(t,e){let i=e.map(this.getRanges.bind(this,t));return Array.prototype.concat.apply([],i);},getFunctionRanges:function(t,e){return this.getRanges(t,e(t));},getRegExpRanges:function(t,e){let i,n=[];for(;null!==(i=e.exec(t))&&(n.push([i.index,i.index+i[0].length]),e.global););return n;},getStringRanges:function(t,e){let i=[],n=t.toLowerCase(),r=e.toLowerCase(),s=0;for(;-1!==(s=n.indexOf(r,s));) i.push([s,s+r.length]),(s+=r.length);return i;},getRangeRanges:function(t,e){return[e];},getCustomRanges:function(t,e){let i=this.getRanges(t,e.highlight);return(e.className&&i.forEach(function(t){t.className?(t.className=e.className+" "+t.className):(t.className=e.className);}),i);},removeStaggeredRanges:function(t){let e=[];return(t.forEach(function(t){e.some(function(e){return((t[0]>e[0]&&t[0]<e[1])!==(t[1]>e[0]&&t[1]<e[1]));})||e.push(t);}),e);},getBoundaries:function(t){let e=[];return(t.forEach(function(t){e.push({type:"start",index:t[0],className:t.className}),e.push({type:"stop",index:t[1]});}),this.sortBoundaries(e),e);},sortBoundaries:function(t){t.sort(function(t,e){return t.index!==e.index?e.index-t.index:"stop"===t.type&&"start"===e.type?1:"start"===t.type&&"stop"===e.type?-1:0;});},renderMarks:function(t){let e=this.$el.val();t.forEach(function(t,i){let n;(n="start"===t.type?"{{hwt-mark-start|"+i+"}}":"{{hwt-mark-stop}}"),(e=e.slice(0,t.index)+n+e.slice(t.index));}),(e=(e=e.replace(/n({{hwt-mark-stop}})?$/,"nn$1")).replace(/</g,"&lt;").replace(/>/g,"&gt;")),"ie"===this.browser&&(e=e.replace(/ /g," <wbr>")),(e=(e=e.replace(/{{hwt-mark-start|(d+)}}/g,function(e,i){var n=t[+i].className;return n?'<mark class="'+n+'">':"<mark>";})).replace(/{{hwt-mark-stop}}/g,"</mark>")),this.$highlights.html(e);},handleScroll:function(){let t=this.$el.scrollTop();this.$backdrop.scrollTop(t);let e=this.$el.scrollLeft();this.$backdrop.css("transform",e>0?"translateX("+-e+"px)":"");},blockContainerScroll:function(){this.$container.scrollLeft(0);},destroy:function(){this.$backdrop.remove(),this.$el.unwrap().removeClass("hwt-text hwt-input").off(e).removeData(e);}}),(t.fn.highlightWithinTextarea=function(n){return this.each(function(){let r=t(this),s=r.data(e);if("string"==typeof n) if(s) switch(n){case"update":s.handleInput();break;case"destroy":s.destroy();break;default:console.error("unrecognized method string");} else console.error("plugin must be instantiated first");else s&&s.destroy(),(s=new i(r,n)).isGenerated&&r.data(e,s);});});})(jQuery);</script> <script>var reg=/%%[a-zA-Z0-9]+%%/g;const textarea=document.getElementById("template");const outputFile=document.getElementById("outputFile");if(window.File&&window.FileReader&&window.FileList&&window.Blob){function loadFile(){const file=document.getElementById("file").files[0];const reader=new FileReader();reader.onload=event=>{document.getElementById("outputFile").value=file.name;textarea.value=event.target.result;$(".text").highlightWithinTextarea("update");$(".text").scroll();};reader.onerror=error=>reject(error);reader.readAsText(file);}}else{alert("The File APIs are not fully supported in this browser.");document.getElementById("file").style.display="none";} function isVarInText(str){const r=new RegExp("%%"+str+"%%");return r.test(textarea.value);} function changeVariableName(elem,loop){let out=false;Array.prototype.slice.call(document.querySelectorAll(".variableName")).forEach(e=>{if(loop)changeVariableName(e,false);if(e.value===elem.value&&e!==elem){elem.style["background-color"]="#959595";out=true;}});if(out)return;if(isVarInText(elem.value)){elem.style["background-color"]="#e1f5fe";}else{elem.style["background-color"]="#fca2a2";}} function generate(){function download(data,filename,type){var file=new Blob([data],{type:type});if(window.navigator.msSaveOrOpenBlob) window.navigator.msSaveOrOpenBlob(file,filename);else{var a=document.createElement("a"),url=URL.createObjectURL(file);a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);window.URL.revokeObjectURL(url);},0);}} function getVariablesData(){return Array.prototype.slice.call(document.querySelectorAll(".variableContainer")).filter(c=>isVarInText(c.querySelector(".variableName").value)&&c.querySelector(".variableName").style["background-color"]!=="#959595").map(c=>{let values=c.querySelector(".variableSubstitutes").value.split("n").filter(s=>s.trim());return{name:c.querySelector(".variableName").value,values:values.length?values:[""]};});} const vars=getVariablesData();const toDo=[];if(!vars[0]){alert("No variables found");return;} function substituteAllNext(d,i,current){const newCurrent=[...current];newCurrent.push({variable:vars[d].name,value:vars[d].values[i]});if(vars.length>d+1){vars[d+1].values.forEach((v,id)=>{substituteAllNext(d+1,id,newCurrent);});}else{toDo.push(newCurrent.slice(0));}} vars[0].values.forEach((v,id)=>substituteAllNext(0,id,[]));const texts=[];toDo.forEach(task=>{var newText=textarea.value;task.forEach(variable=>{newText=newText.replace(new RegExp("%%"+variable.variable+"%%","g"),variable.value);});texts.push({used:task,text:newText});});function makeFileName(task){let out=outputFile.value.split(".");let ext=out.pop();out=out.join(".")+"_"+task.map(t=>t.value).join("_");return out+"."+ext;} var zip=new JSZip();texts.forEach(t=>zip.file(makeFileName(t.used),t.text));zip.generateAsync({type:"blob"}).then(function(content){let name=outputFile.value.split(".");name.pop();name=name.join(".");download(content,name+".zip","text/plantext");});} function switchVariableType(elem){const old=elem.closest(".variableContainer").querySelector(".variableSubstitutes");let newOne;if(elem.checked){newOne=document.createElement("input");newOne.setAttribute("type","text");}else{newOne=document.createElement("textarea");newOne.setAttribute("rows","5");newOne.setAttribute("cols","10");} newOne.setAttribute("class","variableSubstitutes");old.parentNode.replaceChild(newOne,old);} function deleteVariable(elem){elem.parentNode.parentNode.parentNode.removeChild(elem.parentNode.parentNode);} function parseVariables(){const t=textarea.value;const vars=[];do{m=reg.exec(t);if(m){const v=m[0].replace("%%","").replace("%%","");if(!vars.some(e=>e===v)){vars.push(v);}}}while(m);const container=document.querySelector(".variables");const ref=document.querySelector(".variableContainer").cloneNode(true);ref.querySelector(".variableSubstitutes").value="";container.innerHTML="";vars.forEach((v,id)=>{const newOne=ref.cloneNode(true);if(id>0) newOne.querySelector(".variableDelete").setAttribute("style","opacity: 0;");newOne.querySelector(".variableName").value=v;newOne.querySelector(".variableName").style["background-color"]="#e1f5fe";container.appendChild(newOne);});} $(".text").highlightWithinTextarea({highlight:reg});window.onload=()=>{$(".text").highlightWithinTextarea("update");$(".text").scroll();Array.prototype.slice.call(document.querySelectorAll(".variableName")).forEach(e=>changeVariableName(e));};</script> <style>body{font-family:Georgia,sans-serif !important}.container{display:flex;flex-direction:column;max-width:90%}.variableName+.variableDelete{opacity:0;position:absolute;right:0;height:24px;margin-top:1.5px;margin-right:3px;font-size:50%;transition:all 0.2s ease-out !important}.variableDelete:hover{opacity:1 !important}.variableName:hover+.variableDelete{opacity:1 !important}*,*::before,*::after{box-sizing:border-box}body{margin:30px;background-color:#f0f0f0}.text{display:block;margin:0;width:100%;border:2px solid #74637f;border-radius:0;color:#444;background-color:transparent;overflow:auto}textarea:focus,button:focus{outline:none;box-shadow:0 0 0 2px #c6aada}.variableName{text-align:center;background-color:#e1f5fe;border-style:solid;border-width:1px;border-radius:5px;border-color:#01579b}.variables{display:flex;flex-direction:row;justify-content:flex-start;overflow:auto;margin-top:10px}.variableSubstitutes{border-radius:5px}.variableContainer{display:flex;flex-direction:column}.inputfile{display:none}.staticContainer{margin-left:5px}.inputfile+label{cursor:pointer}.generateContainer{display:flex;justify-content:flex-end}</style><style>.hwt-container{display:inline-block;position:relative;width:100%;overflow:hidden !important;-webkit-text-size-adjust:none !important}.hwt-backdrop{position:absolute !important;top:0 !important;bottom:0 !important;left:0 !important;overflow-x:scroll !important;overflow-y:auto !important}mark{background-color:turquoise}.hwt-highlights{width:auto !important;height:auto !important;border-color:transparent !important;white-space:pre !important;word-wrap:break-word !important;color:transparent !important;overflow:hidden !important;width:100%}.hwt-input{display:block !important;position:relative !important;margin:0;padding:0;border-radius:0;font:inherit;overflow-x:scroll !important;overflow-y:auto !important}.hwt-content{border:1px solid;background:none transparent !important}.hwt-content mark{padding:0 !important;color:inherit}</style> <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous" ></script> <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous" ></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.0/jszip.min.js"></script> </html>
+<html>
+  <header>
+    <title>This is title</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <meta charset="UTF-8" />
+  </header>
+  <body>
+    <div class="container">
+      <div class="textContainer">
+        <textarea
+          id="template"
+          class="text"
+          rows="30"
+          wrap="off"
+          spellcheck="false"
+        >
+Write some %%template%% here or click the select file button above (if supported on your browser)</textarea
+        >
+      </div>
+      <input
+        onchange="loadFile()"
+        type="file"
+        name="file"
+        id="file"
+        class="inputfile"
+      />
+      <label class="btn btn-secondary" for="file">Select File</label>
+      <button onClick="parseVariables()" type="button" class="btn btn-info">
+        Parse variables
+      </button>
+      <div class="variables">
+        <div class="variableContainer">
+          <div style="position:relative;">
+            <input
+              onkeyup="changeVariableName(this, true)"
+              class="variableName"
+              type="text"
+              value="template"
+            />
+            <button
+              style="opacity: 0; display: none;"
+              type="button"
+              onclick="deleteVariable(this)"
+              class="btn btn-danger variableDelete"
+            >
+              X
+            </button>
+          </div>
+
+          <textarea class="variableSubstitutes" rows="5" cols="10">
+model
+text
+          </textarea>
+          <div class="form-check staticContainer">
+            <input
+              onchange="switchVariableType(this)"
+              class="form-check-input"
+              type="checkbox"
+            />
+            <label class="form-check-label" for="defaultCheck1">
+              Static
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="generateContainer">
+        <input
+          placeholder="filename.html"
+          type="text"
+          id="outputFile"
+          name="name"
+          value="template.html"
+        />
+        <Button onClick="generate()" class="btn btn-info" value="Generate"
+          >Generate</Button
+        >
+      </div>
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script>
+    !(function(t) {
+      let e = "hwt",
+        i = function(t, e) {
+          this.init(t, e);
+        };
+      (i.prototype = {
+        init: function(t, e) {
+          (this.$el = t),
+            "function" === this.getType(e) && (e = { highlight: e }),
+            "custom" === this.getType(e)
+              ? ((this.highlight = e), this.generate())
+              : console.error("valid config object not provided");
+        },
+        getType: function(t) {
+          let e = typeof t;
+          if (!t) return "falsey";
+          if (Array.isArray(t))
+            return 2 === t.length &&
+              "number" == typeof t[0] &&
+              "number" == typeof t[1]
+              ? "range"
+              : "array";
+          if ("object" === e) {
+            if (t instanceof RegExp) return "regexp";
+            if (t.hasOwnProperty("highlight")) return "custom";
+          } else if ("function" === e || "string" === e) return e;
+          return "other";
+        },
+        generate: function() {
+          switch (
+            (this.$el
+              .addClass("hwt-input hwt-content")
+              .on("input.hwt", this.handleInput.bind(this))
+              .on("scroll.hwt", this.handleScroll.bind(this)),
+            (this.$highlights = t("<div>", {
+              class: "hwt-highlights hwt-content"
+            })),
+            (this.$backdrop = t("<div>", { class: "hwt-backdrop" }).append(
+              this.$highlights
+            )),
+            (this.$container = t("<div>", { class: "hwt-container" })
+              .insertAfter(this.$el)
+              .append(this.$backdrop, this.$el)
+              .on("scroll", this.blockContainerScroll.bind(this))),
+            (this.browser = this.detectBrowser()),
+            this.browser)
+          ) {
+            case "firefox":
+              this.fixFirefox();
+              break;
+            case "ios":
+              this.fixIOS();
+          }
+          (this.isGenerated = !0), this.handleInput();
+        },
+        detectBrowser: function() {
+          let t = window.navigator.userAgent.toLowerCase();
+          return -1 !== t.indexOf("firefox")
+            ? "firefox"
+            : t.match(/msie|trident\/7|edge/)
+            ? "ie"
+            : t.match(/ipad|iphone|ipod/) && -1 === t.indexOf("windows phone")
+            ? "ios"
+            : "other";
+        },
+        fixFirefox: function() {
+          let t = this.$highlights.css([
+              "padding-top",
+              "padding-right",
+              "padding-bottom",
+              "padding-left"
+            ]),
+            e = this.$highlights.css([
+              "border-top-width",
+              "border-right-width",
+              "border-bottom-width",
+              "border-left-width"
+            ]);
+          this.$highlights.css({ padding: "0", "border-width": "0" }),
+            this.$backdrop
+              .css({
+                "margin-top": "+=" + t["padding-top"],
+                "margin-right": "+=" + t["padding-right"],
+                "margin-bottom": "+=" + t["padding-bottom"],
+                "margin-left": "+=" + t["padding-left"]
+              })
+              .css({
+                "margin-top": "+=" + e["border-top-width"],
+                "margin-right": "+=" + e["border-right-width"],
+                "margin-bottom": "+=" + e["border-bottom-width"],
+                "margin-left": "+=" + e["border-left-width"]
+              });
+        },
+        fixIOS: function() {
+          this.$highlights.css({
+            "padding-left": "+=3px",
+            "padding-right": "+=3px"
+          });
+        },
+        handleInput: function() {
+          let t = this.$el.val(),
+            e = this.getRanges(t, this.highlight),
+            i = this.removeStaggeredRanges(e),
+            n = this.getBoundaries(i);
+          this.renderMarks(n);
+        },
+        getRanges: function(t, e) {
+          switch (this.getType(e)) {
+            case "array":
+              return this.getArrayRanges(t, e);
+            case "function":
+              return this.getFunctionRanges(t, e);
+            case "regexp":
+              return this.getRegExpRanges(t, e);
+            case "string":
+              return this.getStringRanges(t, e);
+            case "range":
+              return this.getRangeRanges(t, e);
+            case "custom":
+              return this.getCustomRanges(t, e);
+            default:
+              if (!e) return [];
+              console.error("unrecognized highlight type");
+          }
+        },
+        getArrayRanges: function(t, e) {
+          let i = e.map(this.getRanges.bind(this, t));
+          return Array.prototype.concat.apply([], i);
+        },
+        getFunctionRanges: function(t, e) {
+          return this.getRanges(t, e(t));
+        },
+        getRegExpRanges: function(t, e) {
+          let i,
+            n = [];
+          for (
+            ;
+            null !== (i = e.exec(t)) &&
+            (n.push([i.index, i.index + i[0].length]), e.global);
+
+          );
+          return n;
+        },
+        getStringRanges: function(t, e) {
+          let i = [],
+            n = t.toLowerCase(),
+            r = e.toLowerCase(),
+            s = 0;
+          for (; -1 !== (s = n.indexOf(r, s)); )
+            i.push([s, s + r.length]), (s += r.length);
+          return i;
+        },
+        getRangeRanges: function(t, e) {
+          return [e];
+        },
+        getCustomRanges: function(t, e) {
+          let i = this.getRanges(t, e.highlight);
+          return (
+            e.className &&
+              i.forEach(function(t) {
+                t.className
+                  ? (t.className = e.className + " " + t.className)
+                  : (t.className = e.className);
+              }),
+            i
+          );
+        },
+        removeStaggeredRanges: function(t) {
+          let e = [];
+          return (
+            t.forEach(function(t) {
+              e.some(function(e) {
+                return (
+                  (t[0] > e[0] && t[0] < e[1]) !== (t[1] > e[0] && t[1] < e[1])
+                );
+              }) || e.push(t);
+            }),
+            e
+          );
+        },
+        getBoundaries: function(t) {
+          let e = [];
+          return (
+            t.forEach(function(t) {
+              e.push({ type: "start", index: t[0], className: t.className }),
+                e.push({ type: "stop", index: t[1] });
+            }),
+            this.sortBoundaries(e),
+            e
+          );
+        },
+        sortBoundaries: function(t) {
+          t.sort(function(t, e) {
+            return t.index !== e.index
+              ? e.index - t.index
+              : "stop" === t.type && "start" === e.type
+              ? 1
+              : "start" === t.type && "stop" === e.type
+              ? -1
+              : 0;
+          });
+        },
+        renderMarks: function(t) {
+          let e = this.$el.val();
+          t.forEach(function(t, i) {
+            let n;
+            (n =
+              "start" === t.type
+                ? "{{hwt-mark-start|" + i + "}}"
+                : "{{hwt-mark-stop}}"),
+              (e = e.slice(0, t.index) + n + e.slice(t.index));
+          }),
+            (e = (e = e.replace(/\n(\{\{hwt-mark-stop\}\})?$/, "\n\n$1"))
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")),
+            "ie" === this.browser && (e = e.replace(/ /g, " <wbr>")),
+            (e = (e = e.replace(/\{\{hwt-mark-start\|(\d+)\}\}/g, function(
+              e,
+              i
+            ) {
+              var n = t[+i].className;
+              return n ? '<mark class="' + n + '">' : "<mark>";
+            })).replace(/\{\{hwt-mark-stop\}\}/g, "</mark>")),
+            this.$highlights.html(e);
+        },
+        handleScroll: function() {
+          let t = this.$el.scrollTop();
+          this.$backdrop.scrollTop(t);
+          let e = this.$el.scrollLeft();
+          this.$backdrop.css(
+            "transform",
+            e > 0 ? "translateX(" + -e + "px)" : ""
+          );
+        },
+        blockContainerScroll: function() {
+          this.$container.scrollLeft(0);
+        },
+        destroy: function() {
+          this.$backdrop.remove(),
+            this.$el
+              .unwrap()
+              .removeClass("hwt-text hwt-input")
+              .off(e)
+              .removeData(e);
+        }
+      }),
+        (t.fn.highlightWithinTextarea = function(n) {
+          return this.each(function() {
+            let r = t(this),
+              s = r.data(e);
+            if ("string" == typeof n)
+              if (s)
+                switch (n) {
+                  case "update":
+                    s.handleInput();
+                    break;
+                  case "destroy":
+                    s.destroy();
+                    break;
+                  default:
+                    console.error("unrecognized method string");
+                }
+              else console.error("plugin must be instantiated first");
+            else
+              s && s.destroy(), (s = new i(r, n)).isGenerated && r.data(e, s);
+          });
+        });
+    })(jQuery);
+  </script>
+
+  <script>
+    var reg = /%%[a-zA-Z0-9]+%%/g;
+    const textarea = document.getElementById("template");
+    const outputFile = document.getElementById("outputFile");
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      function loadFile() {
+        const file = document.getElementById("file").files[0];
+
+        const reader = new FileReader();
+        reader.onload = event => {
+          document.getElementById("outputFile").value = file.name;
+          textarea.value = event.target.result;
+          $(".text").highlightWithinTextarea("update");
+          $(".text").scroll();
+        }; // desired file content
+        reader.onerror = error => reject(error);
+        reader.readAsText(file);
+      }
+    } else {
+      alert("The File APIs are not fully supported in this browser.");
+      document.getElementById("file").style.display = "none";
+    }
+
+    function isVarInText(str) {
+      const r = new RegExp("%%" + str + "%%");
+      return r.test(textarea.value);
+    }
+
+    function changeVariableName(elem, loop) {
+      let out = false;
+      Array.prototype.slice
+        .call(document.querySelectorAll(".variableName"))
+        .forEach(e => {
+          if (loop) changeVariableName(e, false);
+          if (e.value === elem.value && e !== elem) {
+            elem.style["background-color"] = "#959595";
+            out = true;
+          }
+        });
+      if (out) return;
+      if (isVarInText(elem.value)) {
+        elem.style["background-color"] = "#e1f5fe";
+      } else {
+        elem.style["background-color"] = "#fca2a2";
+      }
+    }
+
+    function generate() {
+      function download(data, filename, type) {
+        var file = new Blob([data], { type: type });
+        if (window.navigator.msSaveOrOpenBlob)
+          // IE10+
+          window.navigator.msSaveOrOpenBlob(file, filename);
+        else {
+          // Others
+          var a = document.createElement("a"),
+            url = URL.createObjectURL(file);
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          }, 0);
+        }
+      }
+
+      function getVariablesData() {
+        return Array.prototype.slice
+          .call(document.querySelectorAll(".variableContainer"))
+          .filter(
+            c =>
+              isVarInText(c.querySelector(".variableName").value) &&
+              c.querySelector(".variableName").style["background-color"] !==
+                "#959595"
+          )
+          .map(c => {
+            let values = c
+              .querySelector(".variableSubstitutes")
+              .value.split("\n")
+              .filter(s => s.trim());
+            return {
+              name: c.querySelector(".variableName").value,
+              values: values.length ? values : [""]
+            };
+          });
+      }
+      const vars = getVariablesData();
+      const toDo = [];
+      if (!vars[0]) {
+        alert("No variables found");
+        return;
+      }
+
+      function substituteAllNext(d, i, current) {
+        const newCurrent = [...current];
+        newCurrent.push({ variable: vars[d].name, value: vars[d].values[i] });
+        if (vars.length > d + 1) {
+          vars[d + 1].values.forEach((v, id) => {
+            substituteAllNext(d + 1, id, newCurrent);
+          });
+        } else {
+          toDo.push(newCurrent.slice(0));
+        }
+      }
+
+      vars[0].values.forEach((v, id) => substituteAllNext(0, id, []));
+
+      const texts = [];
+      toDo.forEach(task => {
+        var newText = textarea.value;
+        task.forEach(variable => {
+          newText = newText.replace(
+            new RegExp("%%" + variable.variable + "%%", "g"),
+            variable.value
+          );
+        });
+        texts.push({ used: task, text: newText });
+      });
+
+      function makeFileName(task) {
+        let out = outputFile.value.split(".");
+        let ext = out.pop();
+        out = out.join(".") + "_" + task.map(t => t.value).join("_");
+        return out + "." + ext;
+      }
+
+      var zip = new JSZip();
+      texts.forEach(t => zip.file(makeFileName(t.used), t.text));
+      zip.generateAsync({ type: "blob" }).then(function(content) {
+        let name = outputFile.value.split(".");
+        name.pop();
+        name = name.join(".");
+        download(content, name + ".zip", "text/plantext");
+      });
+    }
+
+    function switchVariableType(elem) {
+      const old = elem
+        .closest(".variableContainer")
+        .querySelector(".variableSubstitutes");
+      let newOne;
+      if (elem.checked) {
+        newOne = document.createElement("input");
+        newOne.setAttribute("type", "text");
+      } else {
+        newOne = document.createElement("textarea");
+        newOne.setAttribute("rows", "5");
+        newOne.setAttribute("cols", "10");
+      }
+      newOne.setAttribute("class", "variableSubstitutes");
+      old.parentNode.replaceChild(newOne, old);
+    }
+
+    function deleteVariable(elem) {
+      elem.parentNode.parentNode.parentNode.removeChild(
+        elem.parentNode.parentNode
+      );
+    }
+
+    function parseVariables() {
+      const t = textarea.value;
+      const vars = [];
+      do {
+        m = reg.exec(t);
+        if (m) {
+          const v = m[0].replace("%%", "").replace("%%", "");
+          if (!vars.some(e => e === v)) {
+            vars.push(v);
+          }
+        }
+      } while (m);
+      const container = document.querySelector(".variables");
+      const ref = document.querySelector(".variableContainer").cloneNode(true);
+      ref.querySelector(".variableSubstitutes").value = "";
+      container.innerHTML = "";
+      vars.forEach((v, id) => {
+        const newOne = ref.cloneNode(true);
+        if (id > 0)
+          newOne
+            .querySelector(".variableDelete")
+            .setAttribute("style", "opacity: 0;");
+
+        newOne.querySelector(".variableName").value = v;
+        newOne.querySelector(".variableName").style["background-color"] =
+          "#e1f5fe";
+        container.appendChild(newOne);
+      });
+    }
+    $(".text").highlightWithinTextarea({
+      highlight: reg // string, regexp, array, function, or custom object
+    });
+    window.onload = () => {
+      $(".text").highlightWithinTextarea("update");
+      $(".text").scroll();
+      Array.prototype.slice
+        .call(document.querySelectorAll(".variableName"))
+        .forEach(e => changeVariableName(e));
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: Georgia, sans-serif !important;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      max-width: 90%;
+    }
+
+    .variableName + .variableDelete {
+      opacity: 0;
+      position: absolute;
+      right: 0;
+      height: 24px;
+      margin-top: 1.5px;
+      margin-right: 3px;
+      font-size: 50%;
+      transition: all 0.2s ease-out !important;
+    }
+
+    .variableDelete:hover {
+      opacity: 1 !important;
+    }
+
+    .variableName:hover + .variableDelete {
+      opacity: 1 !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 30px;
+      background-color: #f0f0f0;
+    }
+
+    .text {
+      display: block;
+      margin: 0;
+      width: 100%;
+      border: 2px solid #74637f;
+      border-radius: 0;
+      color: #444;
+      background-color: transparent;
+      overflow: auto;
+    }
+
+    textarea:focus,
+    button:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #c6aada;
+    }
+
+    .variableName {
+      text-align: center;
+      background-color: #e1f5fe;
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 5px;
+      border-color: #01579b;
+    }
+    .variables {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      overflow: auto;
+      margin-top: 10px;
+    }
+
+    .variableSubstitutes {
+      border-radius: 5px;
+    }
+
+    .variableContainer {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .inputfile {
+      display: none;
+    }
+
+    .staticContainer {
+      margin-left: 5px;
+    }
+
+    .inputfile + label {
+      cursor: pointer; /* "hand" cursor */
+    }
+
+    .generateContainer {
+      display: flex;
+      justify-content: flex-end;
+    }
+  </style>
+
+  <style>
+    .hwt-container {
+      display: inline-block;
+      position: relative;
+      width: 100%;
+      overflow: hidden !important;
+      -webkit-text-size-adjust: none !important;
+    }
+
+    .hwt-backdrop {
+      position: absolute !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      overflow-x: scroll !important;
+      overflow-y: auto !important;
+    }
+
+    mark {
+      background-color: turquoise;
+    }
+    .hwt-highlights {
+      width: auto !important;
+      height: auto !important;
+      border-color: transparent !important;
+      white-space: pre !important;
+      word-wrap: break-word !important;
+      color: transparent !important;
+      overflow: hidden !important;
+      width: 100%;
+    }
+
+    .hwt-input {
+      display: block !important;
+      position: relative !important;
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      font: inherit;
+      overflow-x: scroll !important;
+      overflow-y: auto !important;
+    }
+
+    .hwt-content {
+      border: 1px solid;
+      background: none transparent !important;
+    }
+
+    .hwt-content mark {
+      padding: 0 !important;
+      color: inherit;
+    }
+  </style>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.0/jszip.min.js"></script>
+</html>
